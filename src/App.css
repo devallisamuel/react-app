@@ -25,3 +25,8 @@ button  {
     margin-left: 10px;
     width: 5rem;
 }
+input {
+    width:300px;
+    height:30px;
+    padding-left: 10px;
+}

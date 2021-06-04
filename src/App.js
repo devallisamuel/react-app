@@ -1,13 +1,12 @@
 import React  from 'react';
-import { render } from 'react-dom';
-import searchBooks from './searchBooks';
+import SearchBooks from './SearchBooks';
+import "./App.css";
 
 const App = () => {
-  return(
+  return (
       <div>
-          <searchBooks />
+          <SearchBooks />
       </div>
     );
 }
 export default App;
-// render(<App/>, document.getElementById("root"));

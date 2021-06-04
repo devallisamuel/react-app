@@ -1,46 +1,30 @@
 import React from 'react';
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import JSONDATA from "./Mockdata.json";
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const [books, setBooks] = useState("");
-let games;
 
-const searchBooks = () => {
+
+const SearchBooks = () => {
+    
+    const [books, setBooks] = useState("");
+    const [group, setFilterByGroup] = useState("false");
+    const [level, setFilterByLevel] = useState("false");
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    useEffect(
-        () => {
-            requestBooks();
-        }, []);
-    async function requestBooks() {
-    const res = await fetch(
-    `https://partners.9ijakids.com/index.php?partnerId=555776&accessToken=l0lawtvv-94bv-oi4d-u808-5ubz&action=catalogfilter`
-     );
-    const json = await res.json();
-    games = json;
-
-    setBooks(json.book);
-    }
-
-    function updateList (e)  {
-        if (e.target.value === String){ 
-        return (games.filter((game) =>  game.GameTitle === e));
-    }
-    }
-    function filterByGroup (e)  {
-        if(e === String){
-        return  games.filter((game) => game.Group === e);
-        }
-    }
-    function filterByLevel (e)  {
-        if(e !== Number ){
-            return games.filter((game) => 
-                 game.Level === +e);
-        }
-    }
+    // useEffect(
+    //     () => {
+    //         requestBooks();
+    //     }, []);
+    // async function requestBooks() {
+    // const res = await fetch(
+    // `https://partners.9ijakids.com/index.php?partnerId=555776&accessToken=l0lawtvv-94bv-oi4d-u808-5ubz&action=catalogfilter`
+    //  );
+    // const json = await res.json();
+    // setBooks(json.book);
+    // }
     return( 
         <section>
         <div class="wrapper">
-            <form class="input-field" onSubmit = {e => updateList(e.target.value)}>
+            <form class="input-field">
                 <input 
                 type="text" 
                 value= {books}
@@ -53,26 +37,37 @@ const searchBooks = () => {
             <div class="field-filter-wrapper">
                 <div class="filter-field">
                     <h1>Filter by:</h1>
-                    <button onClick = {filterByGroup()}>Group</button> 
-                    <button onClick = {filterByLevel()}>Level</button> 
+                    <button onClick = {(e) => setFilterByGroup(!group)}>Group</button> 
+                    <button onClick = {(e) => setFilterByLevel(!level)}>Level</button> 
                 </div>
             </div>
         </div>
          <ul>
              {
-             games.map(game =>
+             JSONDATA.filter(val => {
+                 if(books===""){
+                     return val;
+                 }else if(val.GameTitle.toLowerCase().includes(books.toLowerCase())){
+                    return val;
+                 }
+                 else if(level=== true && group === false){
+                     return val.GameLevel.includes(books.toLowerCase())? val:null;
+                 }else if(level=== false && group === true){
+                    return val.GameGroup.toLowerCase().includes(books.toLowerCase)? val:null;
+                 }else{
+                    return null;
+                 }
+             }).map(val =>
             <li>
-                <div class="books">
-                    <h3>{games.GameImage}</h3>
-                    <h2>{games.GameTitle}</h2>
-                    <h3>{games.GameDescription}</h3>
+                <div className="books">
+                    <h2>{val.GameTitle}</h2>
+                    <h3>{val.GameDescription}</h3>
                 </div>
             </li>
-
              )
              }
         </ul>
         </section>
          );
 };
-export default searchBooks;
+export default SearchBooks;
